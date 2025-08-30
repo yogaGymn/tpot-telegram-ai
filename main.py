@@ -11,12 +11,12 @@ es = Elasticsearch(
 )
 
 def fetch_new_alerts(last_ts):
-    query = {
-        "query": {"range": {"@timestamp": {"gt": last_ts}}},
-        "sort": [{"@timestamp": {"order": "asc"}}],
-        "size": 10
-    }
-    res = es.search(index="tpot-*", body=query)
+    res = es.search(
+        index="tpot-*",
+        query={"range": {"@timestamp": {"gt": last_ts}}},
+        sort=[{"@timestamp": {"order": "asc"}}],
+        size=10
+    )
     return res['hits']['hits']
 
 def classify_event(event):
@@ -32,20 +32,15 @@ def classify_event(event):
 
     return ("Unknown", "Periksa log secara manual")
 
-def send_whatsapp(message):
-    url = f"https://graph.facebook.com/v18.0/{config.PHONE_NUMBER_ID}/messages"
-    headers = {
-        "Authorization": f"Bearer {config.WHATSAPP_TOKEN}",
-        "Content-Type": "application/json"
-    }
+def send_telegram(message):
+    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
-        "messaging_product": "whatsapp",
-        "to": config.TARGET_NUMBER,
-        "type": "text",
-        "text": {"body": message}
+        "chat_id": config.TELEGRAM_CHAT_ID,
+        "text": message,
+        "parse_mode": "Markdown"
     }
-    r = requests.post(url, headers=headers, json=payload)
-    print(f"WA send status: {r.status_code}, {r.text}")
+    r = requests.post(url, json=payload)
+    print(f"Telegram send status: {r.status_code}, {r.text}")
 
 if __name__ == "__main__":
     last_ts = "now-5m"
@@ -57,13 +52,13 @@ if __name__ == "__main__":
                 ts = a['_source'].get('@timestamp', '')
                 src_ip = a['_source'].get('src_ip', 'unknown')
                 msg = (
-                    f"[T-Pot Alert]\n"
-                    f"Waktu: {ts}\n"
-                    f"Jenis: {attack_type}\n"
-                    f"IP: {src_ip}\n"
-                    f"Rekomendasi: {recommendation}"
+                    f"🚨 *T-Pot Alert* 🚨\n"
+                    f"🕒 Waktu: {ts}\n"
+                    f"🔎 Jenis: {attack_type}\n"
+                    f"🌐 IP: {src_ip}\n"
+                    f"✅ Rekomendasi: {recommendation}"
                 )
-                send_whatsapp(msg)
+                send_telegram(msg)
                 last_ts = ts
         except Exception as e:
             print(f"Error: {e}")
