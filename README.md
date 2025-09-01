@@ -8,7 +8,7 @@ Dengan bot ini, admin bisa langsung tahu jenis serangan dan rekomendasi tindakan
 ## ✨ Fitur
 - 🔍 Mengambil log serangan dari ** (T-Pot)**
 - 🤖 Mengklasifikasikan jenis serangan secara otomatis (SSH Brute-force, SQL Injection, RCE, dll.)
-- 📲 Mengirimkan notifikasi langsung ke **Telegram Bot**
+- 📲 Mengirimkan notifikasi langsung ke **Telegram Bot** dan **Log Lokal Perhari**
 - ⏱️ Monitoring real-time (cek log setiap 30 detik)
 
 ## ⚙️ Konfigurasi
