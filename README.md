@@ -28,3 +28,6 @@ python3 main.py
 🔎 Jenis: SSH brute-force
 🌐 IP: 192.168.1.100
 ✅ Rekomendasi: Block IP temporer, aktifkan fail2ban
+
+# 👨🏻‍💻 Author
+Bear Cyber Hunt
